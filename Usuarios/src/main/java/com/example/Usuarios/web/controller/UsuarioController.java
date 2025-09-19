@@ -42,16 +42,17 @@ public class UsuarioController {
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<Void> AlterarSenha(@PathVariable @Valid Long id, @RequestBody UsuarioSenhaDto senhaDto){
+    public ResponseEntity<String> AlterarSenha(@PathVariable @Valid Long id, @RequestBody UsuarioSenhaDto senhaDto){
         Usuario user = usuarioService.changePassword(id, senhaDto.getSenhaAtual(), senhaDto.getNovaSenha(), senhaDto.getConfirmarSenha());
-        return ResponseEntity.noContent().build();
+    return ResponseEntity.ok("Senha alterada com sucesso");
     }
 
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
+    public ResponseEntity<String> delete(@PathVariable Long id) {
+        Usuario user = usuarioService.buscarId(id);
         usuarioService.delete(id);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok(String.format("Usuário(a) %s deletado(a)", user.getUsername()));
     }
 }
 

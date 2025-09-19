@@ -63,11 +63,12 @@ public class UsuarioService {
     }
 
     @Transactional
-    public Usuario delete(Long id) {
+    public String delete(Long id) {
         Usuario user = usuarioRepository.findById(id).orElseThrow(
                 () -> new EntityNotFoundException(String.format("Usuário não encontrado"))
         );
+        String usuario = user.getUsername();
         usuarioRepository.delete(user);
-        return user;
+        return usuario;
     }
 }
