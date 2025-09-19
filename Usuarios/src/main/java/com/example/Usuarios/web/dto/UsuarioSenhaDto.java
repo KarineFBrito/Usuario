@@ -16,7 +16,7 @@ public class UsuarioSenhaDto {
     @Size(min = 6, max = 12)
     private String senhaAtual;
     @NotBlank
-    @Size(min = 6, max = 12)
+     @Size(min = 6, max = 12)
     private String novaSenha;
     @NotBlank
     @Size(min = 6, max = 12)
