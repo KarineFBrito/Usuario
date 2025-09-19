@@ -9,7 +9,6 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,7 +19,6 @@ import java.util.List;
 public class UsuarioService {
 
     private final UsuariosRepository usuarioRepository;
-    private final PasswordEncoder passwordEncoder;
 
 
     @Transactional
@@ -29,7 +27,6 @@ public class UsuarioService {
             if(usuarioRepository.existsByUsername(usuario.getUsername())){
                 throw new UsernameUniqueViolationException("Usuário com esse nome já existe");
             }
-            usuario.setPassword(passwordEncoder.encode(usuario.getPassword()));
             return usuarioRepository.save(usuario);
         }catch (DataIntegrityViolationException e){
             throw new UsernameUniqueViolationException(String.format("Usuario {%s} já cadastrado", usuario.getUsername()));
@@ -51,14 +48,14 @@ public class UsuarioService {
     @Transactional
     public Usuario changePassword(Long id, @NotBlank @Size(min = 6, max = 12) String password, @NotBlank @Size(min = 6, max = 12) String newPassword, @NotBlank @Size(min = 6, max = 12) String confirmNewPassword) {
         Usuario user = buscarId(id);
-        if(!passwordEncoder.matches(password, user.getPassword())){
+        if(!password.equals(user.getPassword())){
             throw new PasswordInvalidException(String.format("Senha atual incorreta"));
         }
 
         if(!newPassword.equals(confirmNewPassword)){
             throw new PasswordInvalidException(String.format("Confirmação de senha negada"));
         }
-        user.setPassword(passwordEncoder.encode(newPassword));
+        user.setPassword(newPassword);
         return user;
     }
 

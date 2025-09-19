@@ -20,11 +20,11 @@ public class ApplicationExceptionHandler {
 
     private  final MessageSource messageSource;
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ErroMessage> handleValidationException(MethodArgumentNotValidException ex) {
+    public ResponseEntity<ErroMessage> handleValidationException(MethodArgumentNotValidException ex, HttpServletRequest request) {
         String errorMessage = "Dados de entrada inválidos. Verifique os campos.";
 
         ErroMessage erro = new ErroMessage(
-                null,
+                request,
                 HttpStatus.BAD_REQUEST,
                 errorMessage
         );
@@ -33,7 +33,7 @@ public class ApplicationExceptionHandler {
     }
     @ExceptionHandler(PasswordInvalidException.class)
     public ResponseEntity<ErroMessage> handlePasswordInvalidException(PasswordInvalidException ex, HttpServletRequest request){
-        log.error("Senha inválida", ex);
+        log.error("Api error", ex);
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -52,7 +52,7 @@ public class ApplicationExceptionHandler {
     }
 
     @ExceptionHandler(UsernameUniqueViolationException.class)
-    public ResponseEntity<ErroMessage> handleUniqueViolationException(RuntimeException ex, HttpServletRequest request){
+    public ResponseEntity<ErroMessage> handleUniqueViolationException(UsernameUniqueViolationException ex, HttpServletRequest request){
         log.error("Api Error - ", ex);
         return ResponseEntity
                 .status(HttpStatus.CONFLICT)

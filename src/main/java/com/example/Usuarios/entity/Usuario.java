@@ -7,7 +7,6 @@ import lombok.Setter;
 import lombok.ToString;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
 import java.util.Objects;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
