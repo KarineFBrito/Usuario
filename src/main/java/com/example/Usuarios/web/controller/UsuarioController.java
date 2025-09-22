@@ -17,9 +17,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-
-import java.util.List;
-
 @Tag(name = "Usuários", description = "Contém todas as operações relativas ao rescursos de cadastro, edição, leitura e deletar de um usuário")
 @RestController
 @RequestMapping("api/v3/usuarios")
@@ -31,30 +28,29 @@ public class UsuarioController {
 
 
     @PostMapping
-    public ResponseEntity<UsuarioResponseDto> create(@Valid @RequestBody UsuarioCreateDto createDto){
+    public ResponseEntity<UsuarioResponseDto> create(@Valid @RequestBody UsuarioCreateDto createDto) {
         Usuario user = usuarioService.criar(usuarioMapper.toUsuario(createDto));
         return ResponseEntity.status(HttpStatus.CREATED).body(usuarioMapper.toDto(user));
     }
 
     @GetMapping
-    public ResponseEntity<Page<UsuarioResponseDto>> getAll(@PageableDefault(size = 10, sort = "id", direction = Sort.Direction.ASC) Pageable pageable){
+    public ResponseEntity<Page<UsuarioResponseDto>> getAll(@PageableDefault(size = 10, sort = "id", direction = Sort.Direction.ASC) Pageable pageable) {
         Page<Usuario> users = usuarioService.buscarTodos(pageable);
         Page<UsuarioResponseDto> userDto = users.map(UsuarioMapper::toDto);
         return ResponseEntity.ok(userDto);
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<String> AlterarSenha(@PathVariable @Valid Long id, @RequestBody UsuarioSenhaDto senhaDto){
+    public ResponseEntity<String> AlterarSenha(@PathVariable @Valid Long id, @RequestBody UsuarioSenhaDto senhaDto) {
         Usuario user = usuarioService.changePassword(id, senhaDto.getSenhaAtual(), senhaDto.getNovaSenha(), senhaDto.getConfirmarSenha());
-    return ResponseEntity.ok("Senha alterada com sucesso");
+        return ResponseEntity.ok("Senha alterada com sucesso");
     }
-
 
     @DeleteMapping("/{id}")
     public ResponseEntity<String> delete(@PathVariable Long id) {
         Usuario user = usuarioService.buscarId(id);
         usuarioService.delete(id);
-        return ResponseEntity.ok(String.format("Usuário(a) %s deletado(a)", user.getUsername()));
+        return ResponseEntity.noContent().build();
     }
 }
 

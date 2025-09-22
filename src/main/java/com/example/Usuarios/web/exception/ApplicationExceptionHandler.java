@@ -13,12 +13,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+
 @Slf4j
 @RequiredArgsConstructor
 @RestControllerAdvice
 public class ApplicationExceptionHandler {
 
-    private  final MessageSource messageSource;
+    private final MessageSource messageSource;
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErroMessage> handleValidationException(MethodArgumentNotValidException ex, HttpServletRequest request) {
         String errorMessage = "Dados de entrada inválidos. Username e password tem que possuir no mínimo 5 caracteres.";
@@ -31,8 +33,9 @@ public class ApplicationExceptionHandler {
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(erro);
     }
+
     @ExceptionHandler(PasswordInvalidException.class)
-    public ResponseEntity<ErroMessage> handlePasswordInvalidException(PasswordInvalidException ex, HttpServletRequest request){
+    public ResponseEntity<ErroMessage> handlePasswordInvalidException(PasswordInvalidException ex, HttpServletRequest request) {
         log.error("Api error", ex);
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
@@ -42,9 +45,9 @@ public class ApplicationExceptionHandler {
 
 
     @ExceptionHandler(EntityNotFoundException.class)
-    public ResponseEntity<ErroMessage> handleEntityNotFoundException(EntityNotFoundException ex, HttpServletRequest request){
+    public ResponseEntity<ErroMessage> handleEntityNotFoundException(EntityNotFoundException ex, HttpServletRequest request) {
         Object[] params = new Object[]{ex.getRecurso(), ex.getCodigo()};
-        String message = messageSource.getMessage("exception.entityNotFoundException", params , request.getLocale());
+        String message = messageSource.getMessage("exception.entityNotFoundException", params, request.getLocale());
         return ResponseEntity
                 .status(HttpStatus.NOT_FOUND)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -52,7 +55,7 @@ public class ApplicationExceptionHandler {
     }
 
     @ExceptionHandler(UsernameUniqueViolationException.class)
-    public ResponseEntity<ErroMessage> handleUniqueViolationException(UsernameUniqueViolationException ex, HttpServletRequest request){
+    public ResponseEntity<ErroMessage> handleUniqueViolationException(UsernameUniqueViolationException ex, HttpServletRequest request) {
         log.error("Api Error - ", ex);
         return ResponseEntity
                 .status(HttpStatus.CONFLICT)

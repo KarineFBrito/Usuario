@@ -12,7 +12,7 @@ public class EntityNotFoundException extends RuntimeException {
         super(message);
     }
 
-    public EntityNotFoundException(String recurso, String codigo){
+    public EntityNotFoundException(String recurso, String codigo) {
         this.recurso = recurso;
         this.codigo = codigo;
     }

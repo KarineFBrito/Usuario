@@ -4,7 +4,11 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 
-@Getter @Setter @NoArgsConstructor @ToString @AllArgsConstructor
+@Getter
+@Setter
+@NoArgsConstructor
+@ToString
+@AllArgsConstructor
 public class UsuarioCreateDto {
 
     @NotBlank

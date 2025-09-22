@@ -14,8 +14,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-
 @RequiredArgsConstructor
 @Service
 public class UsuarioService {
@@ -26,11 +24,11 @@ public class UsuarioService {
     @Transactional
     public Usuario criar(Usuario usuario) {
         try {
-            if(usuarioRepository.existsByUsername(usuario.getUsername())){
+            if (usuarioRepository.existsByUsername(usuario.getUsername())) {
                 throw new UsernameUniqueViolationException("Usuário com esse nome já existe");
             }
             return usuarioRepository.save(usuario);
-        }catch (DataIntegrityViolationException e){
+        } catch (DataIntegrityViolationException e) {
             throw new UsernameUniqueViolationException(String.format("Usuario {%s} já cadastrado", usuario.getUsername()));
         }
     }
@@ -40,7 +38,7 @@ public class UsuarioService {
         return usuarioRepository.findAll(pageable);
     }
 
-    public Usuario buscarId(Long id){
+    public Usuario buscarId(Long id) {
         Usuario user = usuarioRepository.findById(id).orElseThrow(
                 () -> new EntityNotFoundException("Usuário não encontrado")
         );
@@ -50,11 +48,11 @@ public class UsuarioService {
     @Transactional
     public Usuario changePassword(Long id, @NotBlank @Size(min = 6, max = 12) String password, @NotBlank @Size(min = 6, max = 12) String newPassword, @NotBlank @Size(min = 6, max = 12) String confirmNewPassword) {
         Usuario user = buscarId(id);
-        if(!password.equals(user.getPassword())){
+        if (!password.equals(user.getPassword())) {
             throw new PasswordInvalidException("Senha atual incorreta");
         }
 
-        if(!newPassword.equals(confirmNewPassword)){
+        if (!newPassword.equals(confirmNewPassword)) {
             throw new PasswordInvalidException("Alteração de senha negada");
         }
         user.setPassword(newPassword);
