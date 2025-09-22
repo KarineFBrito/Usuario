@@ -9,13 +9,18 @@ import com.example.Usuarios.web.mapper.UsuarioMapper;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+
 import java.util.List;
 
-@Tag(name = "Usuários", description = "Contém todas as operações relativas ao rescursos de cadastro, edição e leitura de um usuário")
+@Tag(name = "Usuários", description = "Contém todas as operações relativas ao rescursos de cadastro, edição, leitura e deletar de um usuário")
 @RestController
 @RequestMapping("api/v3/usuarios")
 @RequiredArgsConstructor
@@ -32,9 +37,10 @@ public class UsuarioController {
     }
 
     @GetMapping
-    public ResponseEntity<List<UsuarioResponseDto>> getAll(){
-        List<Usuario> users = usuarioService.buscarTodos();
-        return ResponseEntity.ok(UsuarioMapper.toListDto(users));
+    public ResponseEntity<Page<UsuarioResponseDto>> getAll(@PageableDefault(size = 10, sort = "id", direction = Sort.Direction.ASC) Pageable pageable){
+        Page<Usuario> users = usuarioService.buscarTodos(pageable);
+        Page<UsuarioResponseDto> userDto = users.map(UsuarioMapper::toDto);
+        return ResponseEntity.ok(userDto);
     }
 
     @PatchMapping("/{id}")

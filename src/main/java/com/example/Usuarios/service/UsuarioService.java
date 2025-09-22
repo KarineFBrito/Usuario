@@ -9,6 +9,8 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,14 +35,14 @@ public class UsuarioService {
         }
     }
 
-    @Transactional
-    public List<Usuario> buscarTodos() {
-        return usuarioRepository.findAll();
+    @Transactional(readOnly = true)
+    public Page<Usuario> buscarTodos(Pageable pageable) {
+        return usuarioRepository.findAll(pageable);
     }
 
     public Usuario buscarId(Long id){
         Usuario user = usuarioRepository.findById(id).orElseThrow(
-                () -> new EntityNotFoundException(String.format("Usuário não encontrado"))
+                () -> new EntityNotFoundException("Usuário não encontrado")
         );
         return user;
     }
@@ -49,23 +51,21 @@ public class UsuarioService {
     public Usuario changePassword(Long id, @NotBlank @Size(min = 6, max = 12) String password, @NotBlank @Size(min = 6, max = 12) String newPassword, @NotBlank @Size(min = 6, max = 12) String confirmNewPassword) {
         Usuario user = buscarId(id);
         if(!password.equals(user.getPassword())){
-            throw new PasswordInvalidException(String.format("Senha atual incorreta"));
+            throw new PasswordInvalidException("Senha atual incorreta");
         }
 
         if(!newPassword.equals(confirmNewPassword)){
-            throw new PasswordInvalidException(String.format("Confirmação de senha negada"));
+            throw new PasswordInvalidException("Alteração de senha negada");
         }
         user.setPassword(newPassword);
         return user;
     }
 
     @Transactional
-    public String delete(Long id) {
+    public void delete(Long id) {
         Usuario user = usuarioRepository.findById(id).orElseThrow(
-                () -> new EntityNotFoundException(String.format("Usuário não encontrado"))
+                () -> new EntityNotFoundException("Usuário não encontrado")
         );
-        String usuario = user.getUsername();
         usuarioRepository.delete(user);
-        return usuario;
     }
 }

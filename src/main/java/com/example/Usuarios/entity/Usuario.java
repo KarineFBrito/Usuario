@@ -11,10 +11,9 @@ import java.util.Objects;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 
-@Getter  @Setter  @NoArgsConstructor  @ToString
+@Getter  @Setter  @NoArgsConstructor
 @Entity
 @Table(name = "usuarios")
-@EntityListeners(AuditingEntityListener.class)
 public class Usuario implements Serializable {
 
     @Id
@@ -40,4 +39,12 @@ public class Usuario implements Serializable {
         return Objects.hashCode(id);
     }
 
+    @Override
+    public String toString() {
+        return "Usuario{" +
+                "id=" + id +
+                ", username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                '}';
+    }
 }

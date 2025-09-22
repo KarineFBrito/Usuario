@@ -21,7 +21,7 @@ public class ApplicationExceptionHandler {
     private  final MessageSource messageSource;
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErroMessage> handleValidationException(MethodArgumentNotValidException ex, HttpServletRequest request) {
-        String errorMessage = "Dados de entrada inválidos. Verifique os campos.";
+        String errorMessage = "Dados de entrada inválidos. Username e password tem que possuir no mínimo 5 caracteres.";
 
         ErroMessage erro = new ErroMessage(
                 request,
